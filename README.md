@@ -1,57 +1,84 @@
-# Project Name
+---
+page_type: sample
+languages:
+- java
+products:
+- azure
+description: "This sample shows how to use Spring Data Apache Cassandra module with Azure CosmosDB service."
+urlFragment: spring-data-cassandra-on-azure
+---
 
-(short, 1-3 sentenced, description of the project)
+# Spring Data Apache Cassandra on Azure
 
-## Features
+This sample shows how to use Spring Data Apache Cassandra module with Azure CosmosDB service.
 
-This project framework provides the following features:
+## TOC
 
-* Feature 1
-* Feature 2
-* ...
+- [Prerequisite](#prerequisite)
+- [Build](#build)
+- [Run](#run)
 
-## Getting Started
+## Prerequisite
 
-### Prerequisites
+- Azure Account
+- JDK 1.8 or above
+- Maven 3.0 or above
+- Curl
 
-(ideally very short, if any)
+## Build
 
-- OS
-- Library version
-- ...
+1. Create a Cassandra account with Azure CosmosDB by following tutorial at 
+[here](https://docs.microsoft.com/en-us/azure/cosmos-db/create-cassandra-java#create-a-database-account).
 
-### Installation
+1. Use [Data Explorer](https://docs.microsoft.com/en-us/azure/cosmos-db/data-explorer) from Azure Portal to create a keyspace named `mykeyspace`. 
 
-(ideally very short)
+1. Find `application.properties` at `src/main/resources` and fill in below properties.
 
-- npm install [package name]
-- mvn install
-- ...
+    ```
+    spring.data.cassandra.contact-points=<replace with your Cassandra contact point>
+    #spring.data.cassandra.local-datacenter=<this is only required if not using custom load balancing policy>
+    spring.data.cassandra.port=10350
+    spring.data.cassandra.username=<replace with your Cassandra account user name>
+    spring.data.cassandra.password=<replace with your Cassandra account password>
+    ```
 
-### Quickstart
-(Add steps to get up and running quickly)
+1. Build the sample application into a `JAR` package by running below command.
+   
+   ```shell
+   mvn clean package
+   ```
 
-1. git clone [repository clone url]
-2. cd [respository name]
-3. ...
+## Run
 
+Following below steps to run and test the sample application.
 
-## Demo
+1. Run application.
 
-A demo app is included to show how to use the project.
+    ```shell
+    java -jar target/spring-data-cassandra-on-azure-0.1.0-SNAPSHOT.jar
+    ```
 
-To run the demo, follow these steps:
+1. Create new users by running below command.
 
-(Add steps to start up the demo)
+    ```shell
+    curl -s -d '{"name":"Tom","species":"cat"}' -H "Content-Type: application/json" -X POST http://localhost:8080/pets
+    curl -s -d '{"name":"Jerry","species":"mouse"}' -H "Content-Type: application/json" -X POST http://localhost:8080/pets
+    ```
+    
+    Sample output is as below.
+    ```text
+    Added Pet(id=1, name=Tom, species=cat).
+    ...
+    Added Pet(id=2, name=Jerry, species=mouse).
+    ```
 
-1.
-2.
-3.
+1. Get all existing pets by running below command.
 
-## Resources
-
-(Any additional resources or related projects)
-
-- Link to supporting information
-- Link to similar sample
-- ...
+    ```shell
+    curl -s http://localhost:8080/pets
+    ```
+    
+    Sample output is as below.
+    ```txt
+    [{"id":1,"name":"Tom","species":"cat"},{"id":2,"name":"Jerry","species":"mouse"}]
+    ```
